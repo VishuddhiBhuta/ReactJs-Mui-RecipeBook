@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Input from "@mui/material/Input";
+import { useState } from "react";
 
 /**
  *
@@ -12,20 +13,31 @@ import Input from "@mui/material/Input";
  *
  */
 
-const RecipeBox = ({
-  onInputChange,
-  addRecipe,
-  inputs,
-  recipeTitle,
-  ingredientsName,
-}) => {
+const RecipeForm = ({ addRecipe }) => {
+  //Create states for both input fields
+  const [recipeTitle, setRecipeTitle] = useState("");
+  const [ingredients, setIngredients] = useState("");
+
+  //Add Input Change Handlers
+  const onRecipeTitleChange = (event) => {
+    setRecipeTitle(event.target.value);
+    //console.log(recipeTitle);
+  };
+
+  const onIngredientsChange = (event) => {
+    setIngredients(event.target.value);
+    //console.log(ingredients);
+  };
+
   return (
     <div>
       <Container
         sx={{
           paddingTop: "24px",
           paddingBottom: "24px",
-          bgcolor: "#dbeeee",
+          backgroundColor: "#ffffff",
+          boxShadow: 2,
+          borderRadius: 2,
         }}
       >
         <Typography
@@ -40,21 +52,21 @@ const RecipeBox = ({
           <Input
             placeholder="Enter Recipe Name"
             name="recipes"
-            value={inputs.recipeTitle}
+            value={recipeTitle}
             sx={{
               width: "100%",
               marginBottom: "20px",
             }}
-            onChange={onInputChange}
+            onChange={onRecipeTitleChange}
           />
           <Input
             placeholder="Enter Ingredients name separated with commas"
             name="ingredients"
-            value={inputs.ingredientsName}
+            value={ingredients}
             sx={{
               width: "100%",
             }}
-            onChange={onInputChange}
+            onChange={onIngredientsChange}
           />
           <Button
             sx={{
@@ -66,7 +78,9 @@ const RecipeBox = ({
             variant="contained"
             color="success"
             onClick={() => {
-              addRecipe();
+              setRecipeTitle("");
+              setIngredients("");
+              addRecipe(recipeTitle, ingredients);
             }}
           >
             Add Recipe
@@ -77,4 +91,4 @@ const RecipeBox = ({
   );
 };
 
-export default RecipeBox;
+export default RecipeForm;
