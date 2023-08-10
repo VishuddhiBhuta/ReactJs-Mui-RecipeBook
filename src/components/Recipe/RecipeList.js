@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -8,6 +8,8 @@ import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
+import Input from "@mui/material/Input";
 
 /**
  *
@@ -15,9 +17,34 @@ import EditIcon from "@mui/icons-material/Edit";
  *      App
  * Child
  *
+ * Note ==>
+ * KeyIndex: ParentIndex (Individual Recipe Index)
+ * Index: Ingredient Index
+ *
  */
 
 function RecipeList({ recipesList, keyIndex, removeRecipe, removeIngredient }) {
+  const [isEditable, setEditable] = useState(false);
+  const [editIndex, setEditIndex] = useState("");
+  const [editIngredientText, setEditIngredientText] = useState("");
+
+  const editHandleChange = (event) => {
+    setEditIngredientText(event.target.value);
+    //console.log(ingredients);
+  };
+
+  const editIngredient = (parentIndex, editItemIndex) => {
+    setEditable(!isEditable);
+    console.log(recipesList.ingredientsList[editItemIndex].ingredientName);
+
+    if (editIndex > -1) {
+      setEditIngredientText(
+        recipesList.ingredientsList[editItemIndex].ingredientName
+      );
+      //setEditIndex("-1");
+    }
+  };
+
   return (
     <Card
       key={keyIndex}
@@ -51,8 +78,19 @@ function RecipeList({ recipesList, keyIndex, removeRecipe, removeIngredient }) {
                   divider={true}
                   secondaryAction={
                     <div>
-                      <IconButton edge="end" aria-label="edit" size="small">
-                        <EditIcon fontSize="small" />
+                      <IconButton
+                        edge="end"
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => {
+                          editIngredient(keyIndex, index);
+                        }}
+                      >
+                        {isEditable ? (
+                          <CheckIcon fontSize="small" />
+                        ) : (
+                          <EditIcon fontSize="small" />
+                        )}
                       </IconButton>
                       <IconButton
                         edge="end"
@@ -67,7 +105,18 @@ function RecipeList({ recipesList, keyIndex, removeRecipe, removeIngredient }) {
                     </div>
                   }
                 >
-                  <ListItemText primary={ingredients.ingredientName} />
+                  {isEditable ? (
+                    <Input
+                      name="editedIngredient"
+                      value={editIngredientText}
+                      sx={{
+                        width: "100%",
+                      }}
+                      onChange={editHandleChange}
+                    />
+                  ) : (
+                    <ListItemText primary={ingredients.ingredientName} />
+                  )}
                 </ListItem>
               );
             }

@@ -30,7 +30,36 @@ import Container from "@mui/material/Container";
  */
 
 function App() {
-  const [recipesList, setRecipesList] = useState([]);
+  const [recipesList, setRecipesList] = useState([
+    {
+      recipeTitle: "Title",
+      ingredientsList: [
+        {
+          ingredientName: "Ingredient 1",
+        },
+        {
+          ingredientName: "Ingredient 2",
+        },
+        {
+          ingredientName: "Ingredient 3",
+        },
+      ],
+    },
+    {
+      recipeTitle: "Title 2",
+      ingredientsList: [
+        {
+          ingredientName: "Ingredient 1",
+        },
+        {
+          ingredientName: "Ingredient 2",
+        },
+        {
+          ingredientName: "Ingredient 3",
+        },
+      ],
+    },
+  ]);
 
   //Add the recipes details in the List
   const addRecipe = (title, ingredients) => {
