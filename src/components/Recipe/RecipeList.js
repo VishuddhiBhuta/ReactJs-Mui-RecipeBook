@@ -22,34 +22,44 @@ import Input from "@mui/material/Input";
  * Index: Ingredient Index
  *
  */
-
 function RecipeList({ recipesList, keyIndex, removeRecipe, removeIngredient }) {
-  const [isEditable, setEditable] = useState(false);
-  const [editIndex, setEditIndex] = useState("");
+  const [editIndex, setEditIndex] = useState(-1);
   const [editIngredientText, setEditIngredientText] = useState("");
 
   const editHandleChange = (event) => {
     setEditIngredientText(event.target.value);
-    //console.log(ingredients);
+    console.log(event.target.value);
   };
 
   const editIngredient = (parentIndex, editItemIndex) => {
-    setEditable(!isEditable);
-    console.log(recipesList.ingredientsList[editItemIndex].ingredientName);
+    setEditIndex(editItemIndex);
 
-    if (editIndex > -1) {
+    if (editItemIndex > -1) {
       setEditIngredientText(
         recipesList.ingredientsList[editItemIndex].ingredientName
       );
-      //setEditIndex("-1");
     }
   };
 
+  const saveIngredient = (parentIndex, editIngIndex) => {
+    console.log(editIngIndex);
+    setEditIndex(-1);
+
+    recipesList.ingredientsList[editIngIndex].ingredientName =
+      editIngredientText;
+
+    let newRecipesList = {
+      ...recipesList,
+      ingredientsList: recipesList.ingredientsList,
+    };
+
+    console.log(newRecipesList);
+  };
+
+  // console.log("OUTSIDE edit index===>", editIndex);
+
   return (
-    <Card
-      key={keyIndex}
-      sx={{ marginTop: "30px", boxShadow: 3, borderRadius: 2 }}
-    >
+    <Card sx={{ marginTop: "30px", boxShadow: 3, borderRadius: 2 }}>
       <CardContent sx={{ position: "relative" }}>
         <IconButton
           onClick={() => {
@@ -71,27 +81,29 @@ function RecipeList({ recipesList, keyIndex, removeRecipe, removeIngredient }) {
         </Typography>
         <List>
           {recipesList.ingredientsList.map((ingredients, index) => {
-            if (ingredients.ingredientName.length > 0) {
+            const isEditable = editIndex === index;
+            if (ingredients.ingredientName.length === 0) return null;
+
+            if (isEditable) {
+              // bhaila edit hoy to aa render thase
+              // with input
               return (
                 <ListItem
-                  key={ingredients.index}
+                  key={`${recipesList.recipeTitle}${index}`}
                   divider={true}
                   secondaryAction={
-                    <div>
+                    <>
                       <IconButton
                         edge="end"
-                        aria-label="edit"
+                        aria-label="Save"
                         size="small"
                         onClick={() => {
-                          editIngredient(keyIndex, index);
+                          saveIngredient(keyIndex, index);
                         }}
                       >
-                        {isEditable ? (
-                          <CheckIcon fontSize="small" />
-                        ) : (
-                          <EditIcon fontSize="small" />
-                        )}
+                        <CheckIcon fontSize="small" />
                       </IconButton>
+
                       <IconButton
                         edge="end"
                         aria-label="delete"
@@ -102,21 +114,54 @@ function RecipeList({ recipesList, keyIndex, removeRecipe, removeIngredient }) {
                       >
                         <DeleteIcon fontSize="small" />
                       </IconButton>
-                    </div>
+                    </>
                   }
                 >
-                  {isEditable ? (
-                    <Input
-                      name="editedIngredient"
-                      value={editIngredientText}
-                      sx={{
-                        width: "100%",
-                      }}
-                      onChange={editHandleChange}
-                    />
-                  ) : (
-                    <ListItemText primary={ingredients.ingredientName} />
-                  )}
+                  <Input
+                    name="editedIngredient"
+                    value={editIngredientText}
+                    sx={{
+                      width: "100%",
+                    }}
+                    onChange={editHandleChange}
+                  />
+                </ListItem>
+              );
+            } else {
+              // ane jo edit button par click na karyu
+              // to aa render thase
+
+              return (
+                <ListItem
+                  key={`${recipesList.recipeTitle}${index}`}
+                  divider={true}
+                  secondaryAction={
+                    <>
+                      <IconButton
+                        edge="end"
+                        aria-label="edit"
+                        size="small"
+                        onClick={() => {
+                          editIngredient(keyIndex, index);
+                        }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        size="small"
+                        onClick={() => {
+                          removeIngredient(keyIndex, index);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  }
+                >
+                  <ListItemText primary={ingredients.ingredientName} />
                 </ListItem>
               );
             }
